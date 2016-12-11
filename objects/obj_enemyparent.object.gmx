@@ -3,7 +3,7 @@
   <spriteName>&lt;undefined&gt;</spriteName>
   <solid>-1</solid>
   <visible>-1</visible>
-  <depth>0</depth>
+  <depth>-150</depth>
   <persistent>0</persistent>
   <parentName>&lt;undefined&gt;</parentName>
   <maskName>&lt;undefined&gt;</maskName>
@@ -27,6 +27,7 @@
             <kind>1</kind>
             <string>///Point at player
 direction = point_direction(x,y,global.playerobject.x,global.playerobject.y);
+image_angle = direction;
 alarm_set(1,redirectdelay);
 
 </string>
@@ -52,7 +53,9 @@ alarm_set(1,redirectdelay);
           <argument>
             <kind>1</kind>
             <string>///Shoot at player
-instance_create(x,y,obj_enemybullet);
+newbullet = instance_create(x,y,obj_enemybullet);
+newbullet.direction = direction;
+newbullet.image_angle = direction;
 alarm_set(0,shootdelay);
 </string>
           </argument>
@@ -77,6 +80,7 @@ alarm_set(0,shootdelay);
           <argument>
             <kind>1</kind>
             <string>///Destroy self and bullet
+effect_create_above(ef_explosion,x,y,0,c_yellow);
 instance_destroy();
 with(other)
 {
@@ -105,7 +109,10 @@ with(other)
           <argument>
             <kind>1</kind>
             <string>///Destroy player
-instance_destroy();
+if (isinv == 0)
+{
+    instance_destroy();
+}
 </string>
           </argument>
         </arguments>
