@@ -34,7 +34,115 @@ destination = 0;
 destdistance = 0;
 myhome = 0;
 alarm_set(0,redirectdelay);
-
+energy = 0;
+maxenergy = 25;
+rechargedelay = 60;
+repairing = false;
+repairdelay = 10;
+athome = true;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="1" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>audio_play_sound(snd_explosion2,100,false);
+effect_create_above(ef_spark,x,y,0,c_red);
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="2" enumb="2">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>///Repair generator
+if (destination != 0 and instance_exists(destination) == true and energy &gt; 0)
+{
+    if (destination.broken = 1 and destination.armor &lt; destination.armormax)
+    {
+        destination.armor += 1;
+        energy -= 1;        
+    }
+    if (destination.armor &gt;= destination.armormax)
+    {
+        destination.beingrepairedby = 0;
+        effect_create_above(ef_spark,destination.x+32,destination.y+32,0,c_yellow); 
+        replacegenerator(destination);  
+        repairing = false;
+    }
+    else
+    {
+        alarm_set(2,repairdelay);
+    }
+}
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="2" enumb="1">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>///Recharge
+///restore engergy
+if (myhome != 0 and athome == true and repairing == false and speed = 0 and energy &lt; maxenergy and myhome.energy &gt; 0)
+{
+    energy += 1;
+    myhome.energy -= 1;
+    if (myhome.energy &lt;= 0)
+    {
+        with(myhome)
+        {
+            instance_destroy();
+        }
+        myhome = 0;
+    }
+}
 </string>
           </argument>
         </arguments>
@@ -59,29 +167,59 @@ alarm_set(0,redirectdelay);
             <kind>1</kind>
             <string>///Move toward broken generator
 generatorcount = instance_number(obj_floorgenerator);
-for (i = 0; i &lt; generatorcount; i+=1)
+if (repairing == false)
 {
-    generator = instance_find(obj_floorgenerator,i);
-    if (generator.broken == 1)
+    if (energy &gt;= 0)
     {
-        distance = distance_to_object(generator);    
-        if (destination == 0 or distance &lt; destdistance)
+        if (destination != 0 and instance_exists(destination))
         {
-            direction = point_direction(x,y,generator.x,generator.y);
+            direction = point_direction(x,y,destination.x,destination.y);
             image_angle = direction;
             speed = movementspeed;
-            destination = generator;
-            destdistance = distance;
+            athome = false;
         }
+        else
+        {
+            for (i = 0; i &lt; generatorcount; i+=1)
+            {
+                generator = instance_find(obj_floorgenerator,i);
+                if (generator.broken == 1 and energy &gt;= generator.armormax - generator.armor and generator.beingrepairedby == 0)
+                {
+                    distance = distance_to_object(generator);    
+                    if (destination == 0 or distance &lt; destdistance)
+                    {
+                        direction = point_direction(x,y,generator.x,generator.y);
+                        image_angle = direction;
+                        speed = movementspeed;
+                        destination = generator;
+                        destdistance = distance;
+                        athome = false;
+                    }
+                }
+            }
+        }
+        
+    }
+    else 
+    {
+        destination = 0;
     }
 }
 
-if (destination == 0)
+if (destination != 0 and instance_exists(destination) == true)
 {
+    destination.beingrepairedby = id;
+}
+
+
+if (destination == 0 and repairing == false and athome == false and myhome != 0)
+{
+    repairing = false;
     direction = point_direction(x,y,myhome.x,myhome.y);
     image_angle = direction;
     speed = movementspeed;
 }
+
 alarm_set(0,redirectdelay);
 
 
@@ -113,20 +251,96 @@ if (destination != 0 and instance_exists(destination) == false)
     destination = 0;
 }
 
-if (destination != 0 and distance_to_point(destination.x,destination.y) &lt; 16)
+if (destination != 0 and distance_to_point(destination.x,destination.y) &lt; 16 and repairing == false)
 {
     speed = 0;
-    effect_create_above(ef_spark,destination.x+32,destination.y+32,0,c_yellow); 
-    replacegenerator(destination);  
+    repairing = true;
+    alarm_set(2,repairdelay);
 
-    destination = 0; 
-    destdistance = 0;
+//    destination = 0; 
+//    destdistance = 0;
 }
-if (destination == 0 and point_distance(x,y,myhome.x,myhome.y) &lt; 1)
+if (myhome != 0 and destination == 0 and point_distance(x,y,myhome.x,myhome.y) &lt; 1)
 {
+    athome = true;
     speed = 0;
     x = myhome.x;
     y = myhome.y;
+}
+</string>
+          </argument>
+        </arguments>
+      </action>
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>///restore energy
+if (myhome != 0 and athome and repairing == false and speed = 0 and alarm_get(1) &lt;= 0 and energy &lt; maxenergy)
+{
+    alarm_set(1,rechargedelay);
+}
+</string>
+          </argument>
+        </arguments>
+      </action>
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>///Destroy ourselves when out of energy and have no home
+if (myhome == 0 and energy &lt;= 0)
+{
+    instance_destroy();
+}
+</string>
+          </argument>
+        </arguments>
+      </action>
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>///Stop if there is no destination
+if (myhome == 0 and destination == 0)
+{
+    speed = 0;
 }
 </string>
           </argument>

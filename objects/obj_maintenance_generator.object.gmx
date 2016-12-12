@@ -29,6 +29,7 @@
 image_speed = 1/3;
 spawndelay = 60 + random(120);
 alarm_set(0,spawndelay);
+energy = 25;
 </string>
           </argument>
         </arguments>
@@ -52,6 +53,30 @@ alarm_set(0,spawndelay);
             <string>///Create Maintenance
 mymaintenance = instance_create(x,y,obj_maintenance);
 mymaintenance.myhome = id;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="1" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>audio_play_sound(snd_explosion2,100,false);
+effect_create_above(ef_explosion,x,y,0,c_green);
 </string>
           </argument>
         </arguments>

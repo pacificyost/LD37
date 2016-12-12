@@ -4,7 +4,20 @@
     <Config>Configs\Default</Config>
   </Configs>
   <NewExtensions/>
-  <sounds name="sound"/>
+  <sounds name="sound">
+    <sound>sound\snd_hit1</sound>
+    <sound>sound\snd_hit2</sound>
+    <sound>sound\snd_powerup1</sound>
+    <sound>sound\snd_rebuiltgenerator</sound>
+    <sound>sound\snd_shot1</sound>
+    <sound>sound\snd_shot2</sound>
+    <sound>sound\snd_playerspawn1</sound>
+    <sound>sound\snd_playerspawn2</sound>
+    <sound>sound\snd_endgame</sound>
+    <sound>sound\snd_explosion1</sound>
+    <sound>sound\snd_explosion2</sound>
+    <sound>sound\snd_liveslost</sound>
+  </sounds>
   <sprites name="sprites">
     <sprite>sprites\spr_player</sprite>
     <sprite>sprites\spr_playerbullet1</sprite>
@@ -22,6 +35,11 @@
     <sprite>sprites\spr_floor</sprite>
     <sprite>sprites\spr_lilred</sprite>
     <sprite>sprites\spr_floorgenerator</sprite>
+    <sprite>sprites\spr_book</sprite>
+    <sprite>sprites\spr_gameover</sprite>
+    <sprite>sprites\spr_title</sprite>
+    <sprite>sprites\spr_lives</sprite>
+    <sprite>sprites\spr_counter</sprite>
   </sprites>
   <backgrounds name="background">
     <background>background\Grey</background>
@@ -56,14 +74,17 @@
     <object>objects\obj_maintenance</object>
     <object>objects\obj_conveyorbelt</object>
     <object>objects\obj_floorgenerator</object>
+    <object>objects\obj_lives</object>
+    <object>objects\obj_lifecounter</object>
   </objects>
   <timelines name="timelines">
     <timeline>timelines\tl_obj_floorgenerator</timeline>
   </timelines>
   <rooms name="rooms">
+    <room>rooms\RoomSelect</room>
     <room>rooms\Battle_room_0</room>
     <room>rooms\Battle_room_1</room>
-    <room>rooms\RoomSelect</room>
+    <room>rooms\EndGame</room>
   </rooms>
   <help>
     <rtf>help.rtf</rtf>

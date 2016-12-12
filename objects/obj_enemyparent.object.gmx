@@ -26,7 +26,15 @@
           <argument>
             <kind>1</kind>
             <string>///Point at player
-direction = point_direction(x,y,global.playerobject.x,global.playerobject.y);
+if (global.playerobject != 0)
+{
+    direction = point_direction(x,y,global.playerobject.x,global.playerobject.y);
+    speed = movementspeed;
+}
+else
+{
+    speed = 0;
+}
 image_angle = direction;
 alarm_set(1,redirectdelay);
 
