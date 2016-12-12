@@ -76,15 +76,17 @@
     <object>objects\obj_floorgenerator</object>
     <object>objects\obj_lives</object>
     <object>objects\obj_lifecounter</object>
+    <object>objects\obj_title</object>
+    <object>objects\obj_gameover</object>
   </objects>
   <timelines name="timelines">
     <timeline>timelines\tl_obj_floorgenerator</timeline>
   </timelines>
   <rooms name="rooms">
-    <room>rooms\RoomSelect</room>
     <room>rooms\Battle_room_0</room>
-    <room>rooms\Battle_room_1</room>
     <room>rooms\EndGame</room>
+    <room>rooms\Battle_room_1</room>
+    <room>rooms\RoomSelect</room>
   </rooms>
   <help>
     <rtf>help.rtf</rtf>

@@ -35,7 +35,7 @@ destdistance = 0;
 myhome = 0;
 alarm_set(0,redirectdelay);
 energy = 0;
-maxenergy = 25;
+maxenergy = 10;
 rechargedelay = 60;
 repairing = false;
 repairdelay = 10;

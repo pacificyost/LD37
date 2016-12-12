@@ -28,7 +28,7 @@
             <string>///Add Instance to Global and spawn player
 global.playerspawn = id;
 spawnplayer();
-global.lives = 1;
+global.lives = 9;
 </string>
           </argument>
         </arguments>
@@ -77,8 +77,16 @@ alarm_set(0,endgamecheckdelay);
             <string>///Endgame check
 if (global.lives &lt;= 0 and global.playerobject == 0)
 {
-    game_end();
+    room_goto_next();
 }
+
+if (!instance_exists(obj_enemy1) and !instance_exists(obj_maintenance))
+{
+    audio_play_sound(snd_endgame,100,false);
+    room_goto_next();
+}
+
+alarm_set(0,endgamecheckdelay);
 </string>
           </argument>
         </arguments>
